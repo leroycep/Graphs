@@ -7,39 +7,67 @@ class Graph:
 
     """Represent a graph as a dictionary of vertices mapping labels to edges."""
     def __init__(self):
-        self.vertices = {}
+        self.vertices = set()
+        self.edges = {}
 
     def add_vertex(self, vertex_id):
         """
         Add a vertex to the graph.
         """
-        pass  # TODO
+        self.vertices.add(vertex_id)
 
     def add_edge(self, v1, v2):
         """
         Add a directed edge to the graph.
         """
-        pass  # TODO
+        if v2 not in self.vertices or v1 not in self.vertices:
+            raise "Vertex not in graph"
+
+        if v1 in self.edges:
+            self.edges[v1].add(v2)
+        else:
+            self.edges[v1] = {v2}
 
     def get_neighbors(self, vertex_id):
         """
         Get all neighbors (edges) of a vertex.
         """
-        pass  # TODO
+        if vertex_id in self.edges:
+            return self.edges[vertex_id]
+        else:
+            return None
 
     def bft(self, starting_vertex):
         """
         Print each vertex in breadth-first order
         beginning from starting_vertex.
         """
-        pass  # TODO
+        visited = set()
+        next_vertices = Queue()
+        next_vertices.enqueue(starting_vertex)
+        while next_vertices.size() > 0:
+            current = next_vertices.dequeue()
+            if current in visited:
+                continue
+            print(current)
+            visited.add(current)
+            for neighbor in self.get_neighbors(current):
+                next_vertices.enqueue(neighbor)
 
     def dft(self, starting_vertex):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
         """
-        pass  # TODO
+        visited = set()
+        next_vertices = [starting_vertex]
+        while len(next_vertices) > 0:
+            current = next_vertices.pop()
+            if current in visited:
+                continue
+            print(current)
+            visited.add(current)
+            next_vertices.extend(self.get_neighbors(current))
 
     def dft_recursive(self, starting_vertex):
         """
