@@ -7,14 +7,13 @@ class Graph:
 
     """Represent a graph as a dictionary of vertices mapping labels to edges."""
     def __init__(self):
-        self.vertices = set()
-        self.edges = {}
+        self.vertices = {}
 
     def add_vertex(self, vertex_id):
         """
         Add a vertex to the graph.
         """
-        self.vertices.add(vertex_id)
+        self.vertices[vertex_id] = set()
 
     def add_edge(self, v1, v2):
         """
@@ -23,17 +22,14 @@ class Graph:
         if v2 not in self.vertices or v1 not in self.vertices:
             raise "Vertex not in graph"
 
-        if v1 in self.edges:
-            self.edges[v1].add(v2)
-        else:
-            self.edges[v1] = {v2}
+        self.vertices[v1].add(v2)
 
     def get_neighbors(self, vertex_id):
         """
         Get all neighbors (edges) of a vertex.
         """
-        if vertex_id in self.edges:
-            return self.edges[vertex_id]
+        if vertex_id in self.vertices:
+            return self.vertices[vertex_id]
         else:
             return None
 
