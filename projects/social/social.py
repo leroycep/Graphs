@@ -1,5 +1,6 @@
 import random
 import math
+from queue import Queue
 
 
 class User:
@@ -84,6 +85,17 @@ class SocialGraph:
         """
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
+
+        to_visit = Queue()
+        to_visit.put([user_id])
+
+        while not to_visit.empty():
+            path = to_visit.get()
+            if path[-1] not in visited:
+                visited[path[-1]] = path
+                for friend in self.friendships[path[-1]]:
+                    to_visit.put([*path, friend])
+
         return visited
 
 
