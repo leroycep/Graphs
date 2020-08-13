@@ -15,6 +15,7 @@ def earliest_ancestor(ancestors, starting_node):
     while len(next_verts) > 0:
         depth, current = next_verts.pop()
 
+        # TODO: Handle case where there are multiple paths to the ancestor that differ in length
         if current in visited:
             continue
         visited.add(current)
