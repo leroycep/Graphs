@@ -57,7 +57,7 @@ class SocialGraph:
 
         # Create friendships
         for user_id in users:
-            num_friends = max(2, math.floor(random.gauss(avg_friendships/2, 2)))
+            num_friends = round(avg_friendships - avg_friendships * random.random() / 2)
 
             existing_friends = self.friendships[user_id]
             num_friends -= len(existing_friends)
@@ -91,5 +91,11 @@ if __name__ == '__main__':
     sg = SocialGraph()
     sg.populate_graph(10, 2)
     print(sg.friendships)
+
+    num_edges = 0
+    for user in sg.friendships:
+        num_edges += len(sg.friendships[user])
+    print(f"avg friendships: {num_edges / len(sg.users)}")
+
     connections = sg.get_all_social_paths(1)
     print(connections)
