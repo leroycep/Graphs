@@ -4,6 +4,7 @@ from world import World
 
 import random
 from ast import literal_eval
+from queue import Queue
 
 # Load world
 world = World()
@@ -32,7 +33,26 @@ def turn_right(dir):
     elif dir == 's':
         return 'w'
     elif dir == 'w':
-        return 's'
+        return 'n'
+
+def directions_to_nearest_unexplored(map, start_room_id):
+    checked = set()
+
+    to_check = Queue()
+    to_check.put(([], start_room_id))
+
+    while not to_check.empty():
+        path, room = to_check.get()
+        if len(path) > 0 and room == '?':
+            return path
+        if room not in checked:
+            checked.add(room)
+            for (direction, room) in map[room].items():
+                to_check.put(([*path, direction], room))
+
+    # No more unexplored exits found
+    return None
+
 
 traversal_path = []
 
@@ -40,19 +60,25 @@ map = {}
 map[player.current_room.id] = {exit:'?' for exit in player.current_room.get_exits()}
 
 while True:
-    start_room = player.current_room
-
-    unexplored_exits = [exit for (exit, exit_room) in map[start_room.id].items() if exit_room == '?']
+    unexplored_exits = [exit for (exit, exit_room) in map[player.current_room.id].items() if exit_room == '?']
     if len(unexplored_exits) == 0:
-        break
+        path = directions_to_nearest_unexplored(map, player.current_room.id)
+        if path is None:
+            break
     else:
-        exit = random.choice(unexplored_exits)
-        traversal_path.append(exit)
-        player.travel(exit)
-        map[start_room.id][exit] = player.current_room.id
+        path = [random.choice(unexplored_exits)]
+
+    for dir in path:
+        start_room = player.current_room
+
+        traversal_path.append(dir)
+        if not player.travel(dir):
+            # We tried to go a direction we couldn't
+            break
+        map[start_room.id][dir] = player.current_room.id
         if player.current_room.id not in map:
             map[player.current_room.id] = {exit:'?' for exit in player.current_room.get_exits()}
-        map[player.current_room.id][turn_right(turn_right(exit))] = start_room.id
+        map[player.current_room.id][turn_right(turn_right(dir))] = start_room.id
 
 
 # TRAVERSAL TEST
