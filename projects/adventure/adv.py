@@ -24,8 +24,35 @@ player = Player(world.starting_room)
 
 # Fill this out with directions to walk
 # traversal_path = ['n', 'n']
+def turn_right(dir):
+    if dir == 'n':
+        return 'e'
+    elif dir == 'e':
+        return 's'
+    elif dir == 's':
+        return 'w'
+    elif dir == 'w':
+        return 's'
+
 traversal_path = []
 
+map = {}
+map[player.current_room.id] = {exit:'?' for exit in player.current_room.get_exits()}
+
+while True:
+    start_room = player.current_room
+
+    unexplored_exits = [exit for (exit, exit_room) in map[start_room.id].items() if exit_room == '?']
+    if len(unexplored_exits) == 0:
+        break
+    else:
+        exit = random.choice(unexplored_exits)
+        traversal_path.append(exit)
+        player.travel(exit)
+        map[start_room.id][exit] = player.current_room.id
+        if player.current_room.id not in map:
+            map[player.current_room.id] = {exit:'?' for exit in player.current_room.get_exits()}
+        map[player.current_room.id][turn_right(turn_right(exit))] = start_room.id
 
 
 # TRAVERSAL TEST
