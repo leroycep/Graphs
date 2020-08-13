@@ -20,9 +20,6 @@ map_file = "maps/main_maze.txt"
 room_graph=literal_eval(open(map_file, "r").read())
 world.load_graph(room_graph)
 
-# Print an ASCII map
-world.print_rooms()
-
 player = Player(world.starting_room)
 
 # Fill this out with directions to walk
@@ -39,6 +36,9 @@ visited_rooms.add(player.current_room)
 for move in traversal_path:
     player.travel(move)
     visited_rooms.add(player.current_room)
+
+# Print an ASCII map
+world.print_rooms(visited_rooms)
 
 if len(visited_rooms) == len(room_graph):
     print(f"TESTS PASSED: {len(traversal_path)} moves, {len(visited_rooms)} rooms visited")
